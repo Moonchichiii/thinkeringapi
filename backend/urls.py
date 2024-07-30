@@ -1,22 +1,31 @@
-"""
-URL configuration for backend project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
+from .views import RegisterView, CustomTokenObtainPairView, CustomTokenRefreshView, LogoutView, CurrentUserView, UpdateEmailView, get_csrf_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('auth/', include('dj_rest_auth.urls')),
+    path('auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('auth/social/', include('allauth.urls')),
+    path('get-csrf-token/', get_csrf_token, name='get_csrf_token'),    
+    
+    path('register/', RegisterView.as_view(), name='register'),
+    path('login/', CustomTokenObtainPairView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('current_user/', CurrentUserView.as_view(), name='current_user'),
+    path('refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
+    path('update_email/', UpdateEmailView.as_view(), name='update_email'),
+    
+    
+    path('api/posts/', include('posts.urls', namespace='posts')),
+    path('api/comments/', include('comments.urls', namespace='comments')),
+    path('api/likes/', include('likes.urls', namespace='likes')),
+    path('api/ratings/', include('ratings.urls', namespace='ratings')),
+    path('api/followers/', include('followers.urls', namespace='followers')),
+    path('api/profiles/', include('profiles.urls', namespace='profiles')),
+    path('api/notifications/', include('notifications.urls', namespace='notifications')),
+    path('api/chatbot/', include('chatbot.urls', namespace='chatbot')),
+    path('api/tags/', include('tags.urls', namespace='tags')),
 ]
+
+
