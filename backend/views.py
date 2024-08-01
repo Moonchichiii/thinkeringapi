@@ -9,14 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from rest_framework import generics, permissions
-from rest_framework.response import Response
-from django.contrib.auth.models import User
-from .serializers import UserSerializer
-
-    
-    
-    
+from rest_framework import permissions
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -83,11 +76,8 @@ class CurrentUserView(generics.RetrieveAPIView):
         user = request.user
         user_data = self.get_serializer(user).data
         return Response(user_data)
-    
-    # CSRF token view
-    def get_csrf_token(request):
-        return JsonResponse({'csrfToken': get_token(request)})
 
-    
-    
-    
+class GetCsrftoken(APIView):
+    def get(self, request, *args, **kwargs):
+        csrf_token = get_token(request)
+        return JsonResponse({'csrfToken': csrf_token})

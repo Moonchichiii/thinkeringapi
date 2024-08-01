@@ -1,14 +1,17 @@
-from django.test import TestCase
+from django.contrib.auth.models import User
+from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
-from rest_framework.test import APIClient
+from profiles.models import Profile
+from django.test import TestCase
 from django.contrib.auth.models import User
 from profiles.models import Profile
-from rest_framework.test import APITestCase
+from django.test import TransactionTestCase
+
 
 
 # Create your tests here.
 
-class ProfileTests(APITestCase):
+class ProfileTests(TransactionTestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create_user(username='testuser', password='12345')
@@ -28,6 +31,10 @@ class ProfileTests(APITestCase):
     def test_profile_str(self):
         profile = Profile.objects.get(user=self.user)
         self.assertEqual(str(profile), self.user.username)
+    
+    def tearDown(self):
+        Profile.objects.all().delete()
+        User.objects.all().delete()
 
 class ProfileModelTests(TestCase):
     def setUp(self):
@@ -40,3 +47,7 @@ class ProfileModelTests(TestCase):
     def test_profile_str(self):
         profile = Profile.objects.get(user=self.user)
         self.assertEqual(str(profile), self.user.username)
+        
+    def tearDown(self):
+        Profile.objects.all().delete()
+        User.objects.all().delete()

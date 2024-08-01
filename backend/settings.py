@@ -4,7 +4,6 @@ from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Security Settings
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
@@ -12,7 +11,6 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'localhost:5173']
 
 # Application Definitions
 INSTALLED_APPS = [
-    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -20,8 +18,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Third-party apps
     'rest_framework',
     'rest_framework_simplejwt',
     'dj_rest_auth',
@@ -35,11 +31,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework.authtoken',
     'cloudinary_storage',
-    'cloudinary',
-    'drf_yasg',
-
-    # Local apps
-    'users',
+    'cloudinary',    
     'profiles',
     'followers.apps.FollowersConfig',
     'likes.apps.LikesConfig',
@@ -87,6 +79,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 # Template Configuration
 TEMPLATES = [
@@ -159,8 +157,10 @@ SIMPLE_JWT = {
 
 # CORS Configuration
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', cast=Csv(), default=['http://localhost:5173'])
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=Csv(), default=['http://localhost:5173'])
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', cast=Csv(), default='http://localhost:5173')
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=Csv(), default='http://localhost:5173')
+
+
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'None'

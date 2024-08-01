@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase, APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.db import transaction, IntegrityError
 from rest_framework import status
 from profiles.models import Profile
 from posts.models import Post
@@ -11,12 +12,15 @@ from ratings.models import Rating
 
 class RatingTests(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='password')
-        self.profile = Profile.objects.get(user=self.user)
-        self.post = Post.objects.create(author=self.profile, title='Test Post', content='Test Content')
-        refresh = RefreshToken.for_user(self.user)
-        self.client = APIClient()
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
+        try:
+            self.user = User.objects.create_user(username='testuser', password='password')
+            self.profile = Profile.objects.get(user=self.user)
+            self.post = Post.objects.create(author=self.profile, title='Test Post', content='Test Content')
+            refresh = RefreshToken.for_user(self.user)
+            self.client = APIClient()
+            self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
+        except IntegrityError:
+            transaction.rollback()
 
     def tearDown(self):
         Rating.objects.all().delete()
@@ -30,6 +34,7 @@ class RatingTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_get_ratings(self):
+        Rating.objects.create(profile=self.profile, post=self.post, rating=5)
         response = self.client.get('/api/ratings/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

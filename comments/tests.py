@@ -9,6 +9,7 @@ from comments.models import Comment
 
 # Create your tests here.
 
+
 class CommentTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='password')
@@ -29,15 +30,17 @@ class CommentTests(APITestCase):
         data = {'post': self.post.id, 'content': 'Test Comment'}
         response = self.client.post('/api/comments/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Comment.objects.count(), 2)  # Original comment and new comment
 
     def test_update_comment(self):
-        data = {'post': self.post.id, 'content': 'Updated Comment'}
+        data = {'content': 'Updated Comment'}
         response = self.client.put(f'/api/comments/{self.comment.id}/', data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.comment.refresh_from_db()
         self.assertEqual(self.comment.content, 'Updated Comment')
 
     def test_delete_comment(self):
-        comment = Comment.objects.create(post=self.post, author=self.profile, content='Test Comment')
-        response = self.client.delete(f'/api/comments/{comment.id}/')
+        comment_id = self.comment.id
+        response = self.client.delete(f'/api/comments/{comment_id}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Comment.objects.filter(id=comment_id).exists())

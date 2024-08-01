@@ -1,15 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from cloudinary.models import CloudinaryField
 from cloudinary import api
 from cloudinary.exceptions import Error as CloudinaryError
 from django.core.exceptions import ValidationError
 from django.apps import apps
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.contrib.auth.models import User
-from .models import Profile
+
 
 # Create your models here.
 class Profile(models.Model):
@@ -45,11 +44,10 @@ class Profile(models.Model):
         
     @property
     def post_count(self):
-        return self.posts.count()  # 'posts' comes from the related_name in Post model's 'author' field
+        return self.posts.count() 
 
     @property
-    def is_popular(self):
-        # Define your popularity logic here, e.g., based on the number of posts
+    def is_popular(self):        
         return self.post_count > 10
 
 
