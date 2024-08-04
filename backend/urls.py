@@ -4,7 +4,7 @@ from .views import (
     RegisterView, CustomTokenObtainPairView, CustomTokenRefreshView, 
     LogoutView, CurrentUserView, UpdateEmailView, GetCsrftoken
 )
-
+    
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/auth/', include('dj_rest_auth.urls')),

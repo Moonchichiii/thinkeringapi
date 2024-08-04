@@ -12,7 +12,7 @@ from django.contrib.contenttypes.models import ContentType
 # Create your models here.
 
 class Post(models.Model):
-    author = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    author = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posts')
     title = models.CharField(max_length=100)
     content = models.TextField()
     image = CloudinaryField('image', blank=True, null=True, transformation={"format": "webp"})
@@ -22,7 +22,6 @@ class Post(models.Model):
     average_rating = models.FloatField(default=0)
     rating_count = models.IntegerField(default=0)
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
-    
 
     def __str__(self):
         return self.title

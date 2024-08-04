@@ -7,8 +7,7 @@ from cloudinary import api
 from cloudinary.exceptions import Error as CloudinaryError
 from django.core.exceptions import ValidationError
 from django.apps import apps
-
-
+  
 
 # Create your models here.
 class Profile(models.Model):
@@ -37,14 +36,14 @@ class Profile(models.Model):
 
     def following_count(self):
         Follow = apps.get_model('followers', 'Follow')
-        return Follow.objects.filter(follower=self).count() 
+        return Follow.objects.filter(follower=self).count()
 
     class Meta:
         ordering = ['user__username']
-        
+
     @property
     def post_count(self):
-        return self.posts.count() 
+        return self.posts.count()  
 
     @property
     def is_popular(self):        
